@@ -1,0 +1,38 @@
+.ds-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-tabs__list {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: 2px solid var(--color-neutral-200);
+  padding: 0 var(--space-4);
+}
+
+.ds-tabs__trigger {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ds-tabs__trigger:hover {
+  color: var(--text-primary);
+}
+
+.ds-tabs__trigger--active {
+  color: var(--color-primary-500);
+  border-bottom-color: var(--color-primary-500);
+}
+
+.ds-tabs__content {
+  padding: var(--space-6) var(--space-4);
+}
