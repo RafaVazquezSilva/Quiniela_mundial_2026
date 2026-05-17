@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { MatchCard, StandingsTable, Badge } from '../design-system'
+import { MatchCard, StandingsTable } from '../design-system'
 import { getFlagUrl } from '../data/groups'
+import { getUsers, saveUser } from '../utils/users'
 
 function formatDate(dateStr) {
   const date = new Date(dateStr + 'T00:00:00')
@@ -10,30 +11,6 @@ function formatDate(dateStr) {
     month: 'long',
     year: 'numeric',
   })
-}
-
-function calculatePoints(prediction, result) {
-  if (!result || result.home === '' || result.away === '') return 0
-  if (!prediction || prediction.home === '' || prediction.away === '') return 0
-
-  const predHome = parseInt(prediction.home)
-  const predAway = parseInt(prediction.away)
-  const resHome = parseInt(result.home)
-  const resAway = parseInt(result.away)
-
-  if (isNaN(predHome) || isNaN(predAway) || isNaN(resHome) || isNaN(resAway)) return 0
-
-  if (predHome === resHome && predAway === resAway) return 10
-  if (predHome - predAway === resHome - resAway) return 7
-  if (
-    (predHome > predAway && resHome > resAway) ||
-    (predHome < predAway && resHome < resAway) ||
-    (predHome === predAway && resHome === resAway)
-  ) {
-    return 3
-  }
-
-  return 0
 }
 
 function calculateStandings(group, results) {
@@ -95,12 +72,32 @@ function calculateStandings(group, results) {
   })
 }
 
-export function GroupView({ group, predictions, onPredictionChange, results, onResultChange }) {
+export function GroupView({ group, user, results, onResultChange }) {
   const [standings, setStandings] = useState([])
+  const [localPredictions, setLocalPredictions] = useState(user?.predictions || {})
+
+  useEffect(() => {
+    setLocalPredictions(user?.predictions || {})
+  }, [user])
 
   useEffect(() => {
     setStandings(calculateStandings(group, results))
   }, [group, results])
+
+  const handlePredictionChange = (matchId, value) => {
+    const newPredictions = {
+      ...localPredictions,
+      [matchId]: value,
+    }
+    setLocalPredictions(newPredictions)
+
+    // Save to user in localStorage
+    const users = getUsers()
+    if (users[user?.id]) {
+      users[user.id].predictions = newPredictions
+      localStorage.setItem('quiniela-users', JSON.stringify(users))
+    }
+  }
 
   const matchesByDate = {}
   group.matches.forEach((match) => {
@@ -135,9 +132,8 @@ export function GroupView({ group, predictions, onPredictionChange, results, onR
             {matchesByDate[date].map((match) => {
               const homeTeam = group.teams.find((t) => t.id === match.homeTeam)
               const awayTeam = group.teams.find((t) => t.id === match.awayTeam)
-              const prediction = predictions?.[match.id] || { home: '', away: '' }
+              const prediction = localPredictions?.[match.id] || { home: '', away: '' }
               const result = results?.[match.id]
-              const points = calculatePoints(prediction, result)
               const isLocked = new Date(match.date + 'T' + match.time) < new Date()
 
               return (
@@ -150,9 +146,8 @@ export function GroupView({ group, predictions, onPredictionChange, results, onR
                   date={`${match.time} - ${match.stadium}`}
                   group={`Grupo ${group.id}`}
                   prediction={prediction}
-                  onPredictionChange={(val) => onPredictionChange(match.id, val)}
+                  onPredictionChange={(val) => handlePredictionChange(match.id, val)}
                   result={result ? `${result.home} - ${result.away}` : null}
-                  points={points}
                   isLocked={isLocked}
                 />
               )

@@ -26,8 +26,12 @@
   color: var(--text-secondary);
 }
 
+.ds-table tbody tr {
+  transition: all var(--transition-fast);
+}
+
 .ds-table tbody tr:hover {
-  background: var(--color-neutral-50);
+  box-shadow: inset 0 0 0 1px var(--color-neutral-300);
 }
 
 .ds-table tbody tr:last-child td {

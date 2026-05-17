@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { groups } from '../data/groups'
 import { GroupView } from './GroupView'
+import { getUsers } from '../utils/users'
 
-export function GroupsPage({ predictions, onPredictionChange, results, onResultChange }) {
+export function GroupsPage({ currentUser, results, onResultChange }) {
   const [selectedGroup, setSelectedGroup] = useState(groups[0].id)
 
   const currentGroup = groups.find((g) => g.id === selectedGroup)
+  const users = getUsers()
+  const user = users[currentUser?.id] || currentUser
 
   return (
     <div>
@@ -45,8 +48,7 @@ export function GroupsPage({ predictions, onPredictionChange, results, onResultC
       <GroupView
         key={selectedGroup}
         group={currentGroup}
-        predictions={predictions}
-        onPredictionChange={onPredictionChange}
+        user={user}
         results={results}
         onResultChange={onResultChange}
       />

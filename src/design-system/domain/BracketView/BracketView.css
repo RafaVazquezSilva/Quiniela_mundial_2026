@@ -34,6 +34,16 @@
   box-shadow: var(--shadow-md);
 }
 
+.ds-bracket__match--pending {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.ds-bracket__match--resolved {
+  border-color: var(--color-primary-300);
+  background: var(--color-primary-50);
+}
+
 .ds-bracket__team {
   display: flex;
   align-items: center;
@@ -42,6 +52,7 @@
   border-bottom: 1px solid var(--color-neutral-100);
   cursor: pointer;
   transition: background var(--transition-fast);
+  gap: var(--space-2);
 }
 
 .ds-bracket__team:last-child {
@@ -61,12 +72,19 @@
   font-weight: var(--font-bold);
 }
 
+.ds-bracket__team--tbd {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
 .ds-bracket__team-name {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   font-size: var(--text-sm);
   color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
 }
 
 .ds-bracket__team-flag {
@@ -74,6 +92,7 @@
   height: 14px;
   border-radius: 2px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .ds-bracket__team-score {
@@ -84,7 +103,37 @@
   text-align: center;
 }
 
+.ds-bracket__score-input {
+  width: 40px;
+  text-align: center;
+  padding: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 2px solid var(--color-neutral-300);
+  border-radius: 6px;
+  background: var(--color-neutral-50);
+  transition: border-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.ds-bracket__score-input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  background: var(--bg-surface);
+}
+
 .ds-bracket__connector {
   width: var(--space-8);
   flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .ds-bracket {
+    flex-direction: column;
+    overflow-x: visible;
+  }
+
+  .ds-bracket__round {
+    min-width: 100%;
+  }
 }

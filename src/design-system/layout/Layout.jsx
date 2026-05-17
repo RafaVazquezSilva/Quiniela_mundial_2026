@@ -2,22 +2,33 @@ export function Layout({ children }) {
   return <div className="ds-layout">{children}</div>;
 }
 
-export function Header({ logo, navLinks, user, children }) {
+export function Header({ logo, navLinks, user, onNavigate, children }) {
   return (
     <header className="ds-header">
-      <div className="ds-header__logo">
+      <div
+        className="ds-header__logo"
+        style={{ cursor: 'pointer' }}
+        onClick={() => onNavigate?.('grupos')}
+      >
         <span className="ds-header__logo-icon">&#9917;</span>
         <span className="ds-header__logo-text">{logo || 'Quiniela 2026'}</span>
       </div>
       <nav className="ds-header__nav">
         {navLinks?.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
+          <button
+            key={link.label}
+            onClick={() => onNavigate?.(link.page)}
             className={`ds-header__nav-link ${link.active ? 'ds-header__nav-link--active' : ''}`}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              fontSize: 'inherit',
+            }}
           >
             {link.label}
-          </a>
+          </button>
         ))}
       </nav>
       {user && (
@@ -27,7 +38,7 @@ export function Header({ logo, navLinks, user, children }) {
         </div>
       )}
     </header>
-  );
+  )
 }
 
 export function Main({ children, className = '' }) {
